@@ -1,3 +1,4 @@
+import { IconGitPullRequest } from "@tabler/icons-react";
 import About from "../pages/About";
 import Account from "../pages/Account";
 import Home from "../pages/Home";
@@ -11,13 +12,17 @@ export const nav = [
     element: <Home />,
     isMenu: true,
     isPrivate: false,
+    icon: <IconGitPullRequest size="1rem" />,
+    color: "red",
   },
   {
     path: "/about",
     name: "About",
     element: <About />,
     isMenu: true,
-    isPrivate: false,
+    isPrivate: true,
+    icon: <IconGitPullRequest size="1rem" />,
+    color: "red",
   },
   {
     path: "/login",
@@ -25,6 +30,8 @@ export const nav = [
     element: <Login />,
     isMenu: false,
     isPrivate: false,
+    icon: <IconGitPullRequest size="1rem" />,
+    color: "red",
   },
   {
     path: "/private",
@@ -32,6 +39,8 @@ export const nav = [
     element: <Private />,
     isMenu: true,
     isPrivate: true,
+    icon: <IconGitPullRequest size="1rem" />,
+    color: "red",
   },
   {
     path: "/account",
@@ -39,5 +48,7 @@ export const nav = [
     element: <Account />,
     isMenu: true,
     isPrivate: true,
+    icon: <IconGitPullRequest size="1rem" />,
+    color: "red",
   },
 ];

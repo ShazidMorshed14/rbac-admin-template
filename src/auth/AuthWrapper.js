@@ -10,13 +10,20 @@ import {
   useMantineColorScheme,
 } from "@mantine/core";
 import { IconMoonStars, IconSun } from "@tabler/icons-react";
+import { User } from "../components/_user";
+import { Logo } from "../components/_logo";
+import { MainLinks } from "../components/_mainLinks";
 
 const AuthContext = createContext();
 
 export const AuthData = () => useContext(AuthContext);
 
 export const AuthWrapper = () => {
-  const [user, setUser] = useState({ details: null, isAuthenticated: false });
+  const [user, setUser] = useState(
+    localStorage.getItem("userDetails")
+      ? JSON.parse(localStorage.getItem("userDetails"))
+      : { details: null, isAuthenticated: false }
+  );
 
   const login = (email, password) => {
     return new Promise((resolve, reject) => {
@@ -25,6 +32,10 @@ export const AuthWrapper = () => {
           email: email,
           password: password,
         };
+        localStorage.setItem(
+          "userDetails",
+          JSON.stringify({ details: userDetails, isAuthenticated: true })
+        );
         setUser({ details: userDetails, isAuthenticated: true });
         resolve("success");
       } else {
@@ -34,6 +45,10 @@ export const AuthWrapper = () => {
   };
 
   const logout = () => {
+    localStorage.setItem(
+      "userDetails",
+      JSON.stringify({ details: null, isAuthenticated: false })
+    );
     setUser({ ...user, isAuthenticated: false });
   };
 
@@ -42,22 +57,30 @@ export const AuthWrapper = () => {
       <AppShell
         padding="md"
         fixed={false}
-        navbar={<RenderMenuItems />}
+        navbar={
+          <Navbar width={{ base: 300 }} height={"94vh"} p="xs">
+            <Navbar.Section grow mt="xs">
+              <RenderMenuItems />
+            </Navbar.Section>
+            <Navbar.Section>
+              <User />
+            </Navbar.Section>
+          </Navbar>
+        }
         header={
           <Header height={60}>
             <Group sx={{ height: "100%" }} px={20} position="apart">
-              <ActionIcon variant="default" size={30}></ActionIcon>
+              <Logo />
+              <ActionIcon
+                variant="default"
+                //onClick={() => toggleColorScheme()}
+                size={30}
+              >
+                <IconSun size="1rem" />
+              </ActionIcon>
             </Group>
           </Header>
         }
-        styles={(theme) => ({
-          main: {
-            backgroundColor:
-              theme.colorScheme === "dark"
-                ? theme.colors.dark[8]
-                : theme.colors.gray[0],
-          },
-        })}
       >
         <RenderRoutes />
       </AppShell>

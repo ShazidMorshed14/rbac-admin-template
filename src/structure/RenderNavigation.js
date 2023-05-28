@@ -1,9 +1,18 @@
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, redirect, useNavigate } from "react-router-dom";
 import { nav } from "./navigation";
 import { AuthData } from "../auth/AuthWrapper";
+import {
+  IconGitPullRequest,
+  IconAlertCircle,
+  IconMessages,
+  IconDatabase,
+  IconLogout,
+  IconLogin,
+} from "@tabler/icons-react";
+import { ThemeIcon, UnstyledButton, Group, Text } from "@mantine/core";
 
 export const RenderRoutes = () => {
-  const user = AuthData();
+  const { user } = AuthData();
 
   return (
     <Routes>
@@ -27,32 +36,57 @@ export const RenderMenuItems = () => {
     <div className="menu">
       {nav.map((r, i) => {
         if (!r.isPrivate && r.isMenu) {
-          return (
-            <div>
-              <Link to={r.path}>{r.name}</Link>
-            </div>
-          );
+          return <MainLink {...r} />;
         } else if (r.isMenu && user.isAuthenticated) {
-          return (
-            <div>
-              <Link to={r.path}>{r.name}</Link>
-            </div>
-          );
+          return <MainLink {...r} />;
         } else {
           return false;
         }
       })}
       {user.isAuthenticated ? (
-        <div className="menuItem">
-          <Link to={"#"} onClick={logout}>
-            Log out
-          </Link>
-        </div>
+        <MainLink
+          name="Logout"
+          path="#"
+          color="red"
+          icon={<IconLogout size="1rem" />}
+          handleClick={() => logout()}
+        />
       ) : (
-        <div className="menuItem">
-          <Link to={"login"}>Log in</Link>
-        </div>
+        <MainLink
+          name="Log in"
+          path="/login"
+          color="red"
+          icon={<IconLogin size="1rem" />}
+        />
       )}
     </div>
   );
 };
+
+function MainLink({ name, path, color, icon, handleClick }) {
+  const navigate = useNavigate();
+  return (
+    <UnstyledButton
+      sx={(theme) => ({
+        display: "block",
+        width: "100%",
+        padding: theme.spacing.xs,
+        borderRadius: theme.radius.sm,
+        color: theme.black,
+
+        "&:hover": {
+          backgroundColor: theme.colors.gray[0],
+        },
+      })}
+      onClick={() => (handleClick ? handleClick() : navigate(path))}
+    >
+      <Group>
+        <ThemeIcon color={color} variant="light">
+          {icon}
+        </ThemeIcon>
+
+        <Text size="sm">{name}</Text>
+      </Group>
+    </UnstyledButton>
+  );
+}
