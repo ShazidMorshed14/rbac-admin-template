@@ -1,27 +1,37 @@
-import { IconGitPullRequest } from "@tabler/icons-react";
+import {
+  IconBrandBooking,
+  IconDashboard,
+  IconGitPullRequest,
+  IconPackage,
+  IconPhoneCalling,
+} from "@tabler/icons-react";
 import About from "../pages/About";
 import Account from "../pages/Account";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Private from "../pages/Private";
+import Dashboard from "../pages/Dashboard";
+import Bookings from "../pages/Bookings";
+import CallBookings from "../pages/CallBookings";
+import Packages from "../pages/Packages";
 
 export const nav = [
   {
     path: "/",
-    name: "Home",
-    element: <Home />,
-    isMenu: true,
-    isPrivate: false,
-    icon: <IconGitPullRequest size="1rem" />,
-    color: "red",
-  },
-  {
-    path: "/about",
-    name: "About",
-    element: <About />,
+    name: "Dashboard",
+    element: <Dashboard />,
     isMenu: true,
     isPrivate: true,
-    icon: <IconGitPullRequest size="1rem" />,
+    icon: <IconDashboard size="1rem" />,
+    color: "blue",
+  },
+  {
+    path: "/bookings",
+    name: "Bookings",
+    element: <Bookings />,
+    isMenu: true,
+    isPrivate: true,
+    icon: <IconBrandBooking size="1rem" />,
     color: "red",
   },
   {
@@ -34,13 +44,22 @@ export const nav = [
     color: "red",
   },
   {
-    path: "/private",
-    name: "Private",
-    element: <Private />,
+    path: "/call-bookings",
+    name: "Call Bookings",
+    element: <CallBookings />,
     isMenu: true,
     isPrivate: true,
-    icon: <IconGitPullRequest size="1rem" />,
-    color: "red",
+    icon: <IconPhoneCalling size="1rem" />,
+    color: "green",
+  },
+  {
+    path: "/packages",
+    name: "Packages",
+    element: <Packages />,
+    isMenu: true,
+    isPrivate: true,
+    icon: <IconPackage size="1rem" />,
+    color: "violet",
   },
   {
     path: "/account",
@@ -49,6 +68,6 @@ export const nav = [
     isMenu: true,
     isPrivate: true,
     icon: <IconGitPullRequest size="1rem" />,
-    color: "red",
+    color: "yellow",
   },
 ];

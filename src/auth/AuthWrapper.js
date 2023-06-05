@@ -13,34 +13,38 @@ import { IconMoonStars, IconSun } from "@tabler/icons-react";
 import { User } from "../components/_user";
 import { Logo } from "../components/_logo";
 import { MainLinks } from "../components/_mainLinks";
+import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 
 const AuthContext = createContext();
 
 export const AuthData = () => useContext(AuthContext);
 
 export const AuthWrapper = () => {
+  const navigate = useNavigate();
+
   const [user, setUser] = useState(
     localStorage.getItem("userDetails")
       ? JSON.parse(localStorage.getItem("userDetails"))
-      : { details: null, isAuthenticated: false }
+      : { details: null, isAuthenticated: false, accessToken: null }
   );
 
-  const login = (email, password) => {
+  const login = async (userDetails, token) => {
     return new Promise((resolve, reject) => {
-      if (password === "password") {
-        const userDetails = {
-          email: email,
-          password: password,
-        };
-        localStorage.setItem(
-          "userDetails",
-          JSON.stringify({ details: userDetails, isAuthenticated: true })
-        );
-        setUser({ details: userDetails, isAuthenticated: true });
-        resolve("success");
-      } else {
-        reject("Incorrect Password");
-      }
+      localStorage.setItem(
+        "userDetails",
+        JSON.stringify({
+          details: userDetails,
+          isAuthenticated: true,
+          accessToken: token,
+        })
+      );
+      setUser({
+        details: userDetails,
+        isAuthenticated: true,
+        accessToken: token,
+      });
+      resolve("success");
     });
   };
 
@@ -50,15 +54,16 @@ export const AuthWrapper = () => {
       JSON.stringify({ details: null, isAuthenticated: false })
     );
     setUser({ ...user, isAuthenticated: false });
+    navigate("/login");
   };
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
       <AppShell
-        padding="md"
+        padding="sm"
         fixed={false}
         navbar={
-          <Navbar width={{ base: 300 }} height={"94vh"} p="xs">
+          <Navbar width={{ base: 100 }} height={"94vh"} p="xs">
             <Navbar.Section grow mt="xs">
               <RenderMenuItems />
             </Navbar.Section>

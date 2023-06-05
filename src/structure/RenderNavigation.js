@@ -9,10 +9,13 @@ import {
   IconLogout,
   IconLogin,
 } from "@tabler/icons-react";
-import { ThemeIcon, UnstyledButton, Group, Text } from "@mantine/core";
+import { ThemeIcon, UnstyledButton, Group, Text, Tooltip } from "@mantine/core";
+import Login from "../pages/Login";
 
 export const RenderRoutes = () => {
   const { user } = AuthData();
+
+  const navigate = useNavigate();
 
   return (
     <Routes>
@@ -66,27 +69,29 @@ export const RenderMenuItems = () => {
 function MainLink({ name, path, color, icon, handleClick }) {
   const navigate = useNavigate();
   return (
-    <UnstyledButton
-      sx={(theme) => ({
-        display: "block",
-        width: "100%",
-        padding: theme.spacing.xs,
-        borderRadius: theme.radius.sm,
-        color: theme.black,
+    <Tooltip label={name}>
+      <UnstyledButton
+        sx={(theme) => ({
+          display: "block",
+          width: "100%",
+          padding: theme.spacing.xs,
+          borderRadius: theme.radius.sm,
+          color: theme.black,
 
-        "&:hover": {
-          backgroundColor: theme.colors.gray[0],
-        },
-      })}
-      onClick={() => (handleClick ? handleClick() : navigate(path))}
-    >
-      <Group>
-        <ThemeIcon color={color} variant="light">
-          {icon}
-        </ThemeIcon>
+          "&:hover": {
+            backgroundColor: theme.colors.gray[0],
+          },
+        })}
+        onClick={() => (handleClick ? handleClick() : navigate(path))}
+      >
+        <Group>
+          <ThemeIcon color={color} variant="light">
+            {icon}
+          </ThemeIcon>
 
-        <Text size="sm">{name}</Text>
-      </Group>
-    </UnstyledButton>
+          {/* <Text size="sm">{name}</Text> */}
+        </Group>
+      </UnstyledButton>
+    </Tooltip>
   );
 }
