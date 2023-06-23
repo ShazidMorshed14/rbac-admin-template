@@ -21,6 +21,7 @@ import { handleErrorResponse, isArrayAndHasContent } from "../../utils/utils";
 import { fetchVehicles } from "../../services/vehicles";
 import { initiateBooking } from "../../services/bookings";
 import { DateInput } from "@mantine/dates";
+import { fetchVehicleModel } from "../../services/vehicleModel";
 
 const AddBooking = ({ opened, close }) => {
   const queryClient = useQueryClient();
@@ -52,6 +53,9 @@ const AddBooking = ({ opened, close }) => {
     "8:30 PM",
     "9:00 PM",
   ]);
+
+  const [vehicleModelId, setVehicleModelId] = useState(null);
+  const [type, setType] = useState(true);
 
   const form = useForm({
     initialValues: {
@@ -94,12 +98,38 @@ const AddBooking = ({ opened, close }) => {
   console.log("vehicle list", vehicleList?.data?.data);
 
   const {
+    data: vehicleModelList,
+    isLoading: vehicleModelListLoading,
+    error: vehicleModelListError,
+    isFetching: vehicleModelFetching,
+  } = useQuery({
+    queryKey: ["fetch-vehicle-models", null, null, form.values.vehicleId, null],
+    enabled: form.values.vehicleId ? true : false,
+    queryFn: fetchVehicleModel,
+    refetchOnWindowFocus: false,
+    keepPreviousData: true,
+    retry: false,
+    onError: (error) => {
+      handleErrorResponse(error);
+    },
+  });
+
+  console.log("vehicle Model List", vehicleModelList);
+
+  const {
     data: packageList,
     isLoading: packageListLoading,
     error: packageListError,
     isFetching: packageListIsFetching,
   } = useQuery({
-    queryKey: ["fetch-packages", null, null, true, form.values.vehicleId],
+    queryKey: [
+      "fetch-packages",
+      null,
+      null,
+      type,
+      form.values.vehicleId,
+      vehicleModelId,
+    ],
     queryFn: fetchPackages,
     enabled: form.values.vehicleId ? true : false,
     refetchOnWindowFocus: false,
@@ -151,6 +181,10 @@ const AddBooking = ({ opened, close }) => {
     });
   };
 
+  const handleVehicleModelId = (event) => {
+    setVehicleModelId(event);
+  };
+
   const handlePackageId = (event) => {
     form.setValues({
       packageId: event,
@@ -170,6 +204,7 @@ const AddBooking = ({ opened, close }) => {
 
   const handleCancel = () => {
     form.reset();
+    setVehicleModelId(null);
     close();
   };
 
@@ -246,12 +281,33 @@ const AddBooking = ({ opened, close }) => {
 
             <Grid.Col md={12} lg={12} sm={12} py="sm">
               <Select
+                label="Select Vehicle Model"
+                disabled={
+                  isArrayAndHasContent(vehicleModelList?.data?.data)
+                    ? false
+                    : true
+                }
+                value={vehicleModelId}
+                onChange={handleVehicleModelId}
+                placeholder="Select Vehicle Type"
+                data={
+                  vehicleModelList?.data?.data
+                    ? convertToVehicleMenu(vehicleModelList?.data?.data)
+                    : []
+                }
+              />
+            </Grid.Col>
+
+            <Grid.Col md={12} lg={12} sm={12} py="sm">
+              <Select
                 label="Select Package"
                 withAsterisk
                 value={form.values.packageId}
                 onChange={handlePackageId}
                 placeholder="Select Package"
-                disabled={packageListIsFetching}
+                disabled={
+                  isArrayAndHasContent(packageList?.data?.data) ? false : true
+                }
                 data={
                   packageList?.data?.data
                     ? convertToPackageMenu(packageList?.data?.data)

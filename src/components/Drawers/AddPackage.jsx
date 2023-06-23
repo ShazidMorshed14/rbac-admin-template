@@ -9,12 +9,13 @@ import {
   Paper,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { convertToVehicleMenu } from "../../common/helper";
 import { toast } from "react-toastify";
 import { addPackage } from "../../services/packages";
 import { handleErrorResponse } from "../../utils/utils";
+import { fetchVehicleModel } from "../../services/vehicleModel";
 
 const AddPackage = ({ opened, close, vehicleData }) => {
   const queryClient = useQueryClient();
@@ -25,6 +26,7 @@ const AddPackage = ({ opened, close, vehicleData }) => {
       label: "",
       price: "",
       vehicleId: "",
+      vehicleModelId: "",
       isActive: false,
     },
 
@@ -42,12 +44,35 @@ const AddPackage = ({ opened, close, vehicleData }) => {
     });
   };
 
+  const handleVehicleModelId = (event) => {
+    form.setValues({
+      vehicleModelId: event,
+    });
+  };
+
   const refetchPackages = async () => {
     await queryClient.refetchQueries({
       queryKey: ["fetch-packages"],
       type: "active",
     });
   };
+
+  const {
+    data: vehicleModelList,
+    isLoading: vehicleModelListLoading,
+    error: vehicleModelListError,
+    isFetching: vehicleModelFetching,
+  } = useQuery({
+    queryKey: ["fetch-vehicle-models", null, null, form.values.vehicleId, null],
+    enabled: form.values.vehicleId ? true : false,
+    queryFn: fetchVehicleModel,
+    refetchOnWindowFocus: false,
+    keepPreviousData: true,
+    retry: false,
+    onError: (error) => {
+      handleErrorResponse(error);
+    },
+  });
 
   const {
     mutate: addPackageUpdateMutate,
@@ -119,10 +144,24 @@ const AddPackage = ({ opened, close, vehicleData }) => {
             </Grid.Col>
             <Grid.Col md={12} lg={12} sm={12} py="sm">
               <Select
+                label="Select Vehicle Type"
                 value={form.values.vehicleId}
                 onChange={handleVehicleId}
                 placeholder="Select Vehicle Type"
                 data={vehicleData ? convertToVehicleMenu(vehicleData) : []}
+              />
+            </Grid.Col>
+            <Grid.Col md={12} lg={12} sm={12} py="sm">
+              <Select
+                label="Select Vehicle Model"
+                value={form.values.vehicleModelId}
+                onChange={handleVehicleModelId}
+                placeholder="Select Vehicle Type"
+                data={
+                  vehicleModelList?.data?.data
+                    ? convertToVehicleMenu(vehicleModelList?.data?.data)
+                    : []
+                }
               />
             </Grid.Col>
             <Flex gap={5} justify="flex-start" align="center" py="sm">

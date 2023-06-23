@@ -1,9 +1,13 @@
 import {
+  IconBike,
   IconBrandBooking,
+  IconCar,
   IconDashboard,
   IconGitPullRequest,
   IconPackage,
   IconPhoneCalling,
+  IconUser,
+  IconUserShare,
 } from "@tabler/icons-react";
 import About from "../pages/About";
 import Account from "../pages/Account";
@@ -14,6 +18,10 @@ import Dashboard from "../pages/Dashboard";
 import Bookings from "../pages/Bookings";
 import CallBookings from "../pages/CallBookings";
 import Packages from "../pages/Packages";
+import Vehicles from "../pages/Vehicles";
+import VehicleModels from "../pages/VehicleModels";
+import Agent from "../pages/Agent";
+import Vendor from "../pages/Vendor";
 
 export const nav = [
   {
@@ -61,13 +69,49 @@ export const nav = [
     icon: <IconPackage size="1rem" />,
     color: "violet",
   },
+  // {
+  //   path: "/account",
+  //   name: "Account",
+  //   element: <Account />,
+  //   isMenu: true,
+  //   isPrivate: true,
+  //   icon: <IconGitPullRequest size="1rem" />,
+  //   color: "yellow",
+  // },
   {
-    path: "/account",
-    name: "Account",
-    element: <Account />,
+    path: "/vehicles",
+    name: "Vehicles",
+    element: <Vehicles />,
     isMenu: true,
     isPrivate: true,
-    icon: <IconGitPullRequest size="1rem" />,
-    color: "yellow",
+    icon: <IconCar size="1rem" />,
+    color: "gray",
+  },
+  {
+    path: "/models",
+    name: "Vehicle Models",
+    element: <VehicleModels />,
+    isMenu: true,
+    isPrivate: true,
+    icon: <IconBike size="1rem" />,
+    color: "pink",
+  },
+  {
+    path: "/agents",
+    name: "Agents",
+    element: <Agent />,
+    isMenu: true,
+    isPrivate: true,
+    icon: <IconUser size="1rem" />,
+    color: "blue",
+  },
+  {
+    path: "/vendors",
+    name: "Vendors",
+    element: <Vendor />,
+    isMenu: true,
+    isPrivate: true,
+    icon: <IconUserShare size="1rem" />,
+    color: "orange",
   },
 ];

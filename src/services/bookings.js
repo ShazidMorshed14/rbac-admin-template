@@ -18,9 +18,7 @@ export const fetchBookings = async (context) => {
 
 export const updateBooking = async (values) => {
   const { id, status } = values;
-  const { data } = await axios.put(`${API_URL}/bookings/update/${id}`, {
-    status: status,
-  });
+  const { data } = await axios.put(`${API_URL}/bookings/update/${id}`, values);
   return data;
 };
 

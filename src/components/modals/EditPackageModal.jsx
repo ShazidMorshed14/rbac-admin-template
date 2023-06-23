@@ -28,11 +28,12 @@ import Banner from "../../images/call_booking.jpg";
 import { getBadge } from "../constants/constants";
 import dayjs from "dayjs";
 import { updateBooking, updateCallBooking } from "../../services/bookings";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { handleErrorResponse } from "../../utils/utils";
 import { toast } from "react-toastify";
 import { updatePackage } from "../../services/packages";
 import { convertToVehicleMenu } from "../../common/helper";
+import { fetchVehicleModel } from "../../services/vehicleModel";
 
 const EditPackageModal = ({ opened, close, data, vehicleData }) => {
   //console.log(data);
@@ -46,6 +47,9 @@ const EditPackageModal = ({ opened, close, data, vehicleData }) => {
       package_slug: data?.package_slug ? data?.package_slug : "",
       price: data?.price ? data?.price : "",
       vehicleId: data?.vehicleId?._id ? data?.vehicleId?._id : "",
+      vehicleModelId: data?.vehicleModelId?._id
+        ? data?.vehicleModelId?._id
+        : null,
       isActive: data?.isActive ? true : false,
     },
 
@@ -74,12 +78,36 @@ const EditPackageModal = ({ opened, close, data, vehicleData }) => {
     console.log(form.values);
   };
 
+  const handleVehicleModel = (event) => {
+    form.setValues({
+      vehicleModelId: event,
+    });
+    console.log(form.values);
+  };
+
   const refetchPackages = async () => {
     await queryClient.refetchQueries({
       queryKey: ["fetch-packages"],
       type: "active",
     });
   };
+
+  const {
+    data: vehicleModelList,
+    isLoading: vehicleModelListLoading,
+    error: vehicleModelListError,
+    isFetching: vehicleModelFetching,
+  } = useQuery({
+    queryKey: ["fetch-vehicle-models", null, null, form.values.vehicleId, null],
+    enabled: form.values.vehicleId ? true : false,
+    queryFn: fetchVehicleModel,
+    refetchOnWindowFocus: false,
+    keepPreviousData: true,
+    retry: false,
+    onError: (error) => {
+      handleErrorResponse(error);
+    },
+  });
 
   const {
     mutate: editPackageUpdateMutate,
@@ -142,10 +170,26 @@ const EditPackageModal = ({ opened, close, data, vehicleData }) => {
             </Grid.Col>
             <Grid.Col md={12} lg={12} sm={12} py="sm">
               <Select
+                label="Select Vehicle"
+                required
+                withAsterisk
                 value={form.values.vehicleId}
                 onChange={handleVehicleId}
                 placeholder="Select Vehicle Type"
                 data={vehicleData ? convertToVehicleMenu(vehicleData) : []}
+              />
+            </Grid.Col>
+            <Grid.Col md={12} lg={12} sm={12} py="sm">
+              <Select
+                label="Select Vehicle Model"
+                value={form.values.vehicleModelId}
+                onChange={handleVehicleModel}
+                placeholder="Select Vehicle Model"
+                data={
+                  vehicleModelList?.data?.data
+                    ? convertToVehicleMenu(vehicleModelList?.data?.data)
+                    : []
+                }
               />
             </Grid.Col>
             <Flex gap={5} justify="flex-start" align="center" py="sm">

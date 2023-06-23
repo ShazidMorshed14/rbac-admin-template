@@ -10,7 +10,7 @@ export const convertToVehicleMenu = (list) => {
 export const convertToPackageMenu = (list) => {
   const convertedData = list.map((item) => ({
     value: item._id,
-    label: item.name,
+    label: `${item.name} - ${item.price} BDT`,
   }));
 
   return convertedData;

@@ -59,10 +59,36 @@ const Dashboard = () => {
           <CurrentDate />
         </Flex>
       </Flex>
-      <StatBoxes data={statData} />
+
       <Box py="md">
         {!dashboardDataFetching && dashboardData?.data?.data ? (
-          <CategoryBoxesCustom data={dashboardData?.data?.data} />
+          <>
+            <Box py="md">
+              <StatBoxes
+                data={[
+                  {
+                    title: "Bookings",
+                    stats: dashboardData?.data?.data.totalBookings,
+                    description:
+                      "24% more than in the same month last year, 33% more that two years ago",
+                  },
+                  {
+                    title: "Call Bookings",
+                    stats: dashboardData?.data?.data.totalCallBookings,
+                    description:
+                      "13% less compared to last month, new user engagement up by 6%",
+                  },
+                  {
+                    title: "Total Packages",
+                    stats: dashboardData?.data?.data.totalPackages,
+                    description:
+                      "1994 orders were completed this month, 97% satisfaction rate",
+                  },
+                ]}
+              />
+            </Box>
+            <CategoryBoxesCustom data={dashboardData?.data?.data} />
+          </>
         ) : (
           <LoadingView />
         )}

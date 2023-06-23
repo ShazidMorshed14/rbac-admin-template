@@ -10,6 +10,7 @@ export const fetchPackages = async (context) => {
       name: context.queryKey[2],
       isActive: context.queryKey[3],
       vehicleId: context.queryKey[4],
+      vehicleModelId: context.queryKey[5],
     },
   });
   return response;
